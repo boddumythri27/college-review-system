@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search - College Review System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
+        .navbar { background: #1a1a2e; padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { color: #e94560; font-size: 22px; font-weight: 700; text-decoration: none; }
+        .nav-links a { color: #ccc; text-decoration: none; margin-left: 24px; font-size: 15px; }
+        .nav-links a:hover { color: #e94560; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 30px 20px; }
+        .page-header { text-align: center; margin-bottom: 36px; }
+        .page-header h1 { font-size: 32px; color: #1a1a2e; margin-bottom: 20px; }
+        .search-form { display: flex; gap: 12px; max-width: 560px; margin: 0 auto; }
+        .search-form input { flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; }
+        .search-form input:focus { outline: none; border-color: #e94560; }
+        .btn { background: #e94560; color: white; padding: 12px 24px; border-radius: 6px; border: none; cursor: pointer; font-size: 15px; font-weight: 500; text-decoration: none; }
+        .btn:hover { background: #c73652; }
+        .college-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; margin-top: 30px; }
+        .college-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .college-card h2 { font-size: 18px; color: #1a1a2e; margin-bottom: 10px; }
+        .college-card p { color: #666; margin-bottom: 8px; font-size: 14px; }
+        .college-card .btn { display: block; margin-top: 12px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="/" class="logo">🎓 CollegeReview</a>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/search">Search</a>
+        {% if current_user.is_authenticated %}
+            {% if current_user.is_admin %}
+                <a href="/admin">Admin</a>
+            {% endif %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/signup">Signup</a>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Search Colleges</h1>
+        <form method="GET" action="/search" class="search-form">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search by name, city or state...">
+            <button type="submit" class="btn">Search</button>
+        </form>
+    </div>
+
+    <div class="college-grid">
+        {% for college in colleges %}
+        <div class="college-card">
+            <h2>{{ college.name }}</h2>
+            <p>📍 {{ college.city }}, {{ college.state }}</p>
+            <p>💬 {{ college.reviews|length }} review(s)</p>
+            <a href="/college/{{ college.id }}" class="btn">View Reviews</a>
+        </div>
+        {% else %}
+            {% if query %}
+                <p>No colleges found for "<strong>{{ query }}</strong>".</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
